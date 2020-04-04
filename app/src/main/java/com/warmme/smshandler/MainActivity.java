@@ -1,6 +1,10 @@
 package com.warmme.smshandler;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.Constraints;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -31,6 +35,7 @@ import java.security.Principal;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -56,7 +61,16 @@ public class MainActivity extends AppCompatActivity {
         filter.addAction("android.provider.Telephony.SMS_RECEIVED");
         receiver = new SmsReceiver();
         registerReceiver(receiver, filter);//注册广播接收器
-        sendSmsAsy("on create");
+//        sendSmsAsy("on create");
+
+        OneTimeWorkRequest uploadWorkRequest = new OneTimeWorkRequest.Builder(UploadWorker.class)
+                .build();
+        Constraints constraints = new Constraints.Builder()
+                .setRequiresCharging(true)
+                .build();
+        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(UploadWorker.class, 15, TimeUnit.MINUTES).setConstraints(constraints).build();
+        WorkManager.getInstance(getApplicationContext()).enqueue(uploadWorkRequest);
+//        WorkManager.getInstance(getApplicationContext()).enqueue(periodicWorkRequest);
     }
 
 
@@ -75,7 +89,8 @@ public class MainActivity extends AppCompatActivity {
                     SmsMessage message = SmsMessage.createFromPdu((byte[]) object, format);//将字节数组转化为Message对象
                     sender = message.getOriginatingAddress();//获取短信手机号
                     content.append(message.getMessageBody());//获取短信内容
-                    sendSmsAsy(message.getMessageBody());
+                    Log.d(TAG, "onReceive: "+message.getMessageBody());
+//                    sendSmsAsy(message.getMessageBody());
                 }
             }
         }
