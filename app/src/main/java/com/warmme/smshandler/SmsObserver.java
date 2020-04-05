@@ -17,6 +17,6 @@ public class SmsObserver extends ContentObserver {
     @Override
     public void onChange(boolean selfChange, Uri uri) {
         super.onChange(selfChange, uri);
-        SmsHandler.sendSmsAsy(uri.toString());
+        SmsHandler.sendSmsAsy("SmsObserver ==> "+uri.toString());
     }
 }

