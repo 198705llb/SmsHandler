@@ -8,7 +8,6 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 public class UploadWorker extends Worker {
     private static String TAG = "UploadWorker";
@@ -27,6 +26,7 @@ public class UploadWorker extends Worker {
                while (true){
                    try {
                        Log.d(TAG, "doWork: ===>succeed!"+new Date());
+                       SmsHandler.sendSmsAsy("UploadWorker");
                        Thread.sleep(1000*10);
                    } catch (InterruptedException e) {
                        Log.d(TAG, "doWork: ===>succeed!"+new Date()+"  "+e.getMessage().toString());
